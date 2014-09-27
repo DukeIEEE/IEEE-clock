@@ -302,7 +302,7 @@ void myDelay(unsigned long duration) {
 // Keep in mind that we'll need to rewrite this code for a 12-LED strip (remove hour_index = h)
 // This function works properly unless checkButtons() is called.
 void updateClock(int s, int m, int h) {
-  if(h==12) {
+  if(h==13) {
     h = 1;
   }
   
