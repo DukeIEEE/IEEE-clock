@@ -26,8 +26,8 @@ uint32_t hour_c = strip.Color(0, 0, 255); //hour
 //--------------------------------------------------------------------------------------------------------------------------------
 
 // Buttons
-const int buttonPin_m = 2;     // the number of the pushbutton pin
-const int buttonPin_h = 3;
+const int buttonPin_m = A2;     // the number of the pushbutton pin
+const int buttonPin_h = A3;
 
 // variables will change:
 int buttonState_m = 0;         // variable for reading the pushbutton status
@@ -290,26 +290,22 @@ void myDelay(unsigned long duration) {
   m = bcd2bin(rtc.Minutes10, rtc.Minutes);
   h = bcd2bin(rtc.h12.Hour10, rtc.h12.Hour);
   
-  updateClock(s,m,h);
+  updateClock();
   
-  unsigned long start = millis();
+//  unsigned long start = millis();
 //  while (millis() - start <= duration) {
-//    checkButtons();
+    checkButtons();
 //  }
 }
 
 // Updates the clock given (s,m,h) values
 // Keep in mind that we'll need to rewrite this code for a 12-LED strip (remove hour_index = h)
 // This function works properly unless checkButtons() is called.
-void updateClock(int s, int m, int h) {
-  if(h==13) {
-    h = 1;
-  }
-  
-  Serial.print(s);
-  Serial.print(' ');
-  Serial.print(m);
-  Serial.print(' ');
+void updateClock() {
+//  Serial.print(s);
+//  Serial.print(' ');
+//  Serial.print(m);
+//  Serial.print(' ');
 //  Serial.println(h);
   
   for(int i=0; i<strip.numPixels(); i++) {
@@ -325,62 +321,52 @@ void updateClock(int s, int m, int h) {
   strip.setPixelColor(hour_index, strip.getPixelColor(hour_index)+hour_c);
   strip.show();
   
-  Serial.println(5*h + m/12);
+//  Serial.println(5*h + m/12);
+  
+  delay(10);
 }
 
-unsigned long buttonDelay = 100; // Minimum time before button-press can be registered again
+unsigned long buttonDelay = 300; // Minimum time before button-press can be registered again
 // (not a good button system because it doesn't allow continuous button-holding changes, so someone help us fix this)
-unsigned long lastPressedTime_m, lastPressedTime_h;
-boolean m_depressed = false, h_depressed = false;
+unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0;
+//boolean m_depressed = false, h_depressed = false; // store button states (1 - depressed, 0 - not depressed)
 
 // This part doesn't work.
 // I think it's incrementing incorrectly somewhere, but not sure where yet...
 void checkButtons() {
-  // read the state of the pushbutton value:
-  buttonState_m = digitalRead(buttonPin_m);
-  if(buttonState_m == HIGH) { // button press
-    m_depressed = true;
-  }
-  if(m_depressed && buttonState_m==LOW) { // checks whether button's state has changed to 'depressed'
+  if((millis()-lastPressedTime_m > buttonDelay) && (analogRead(buttonPin_m)==0)) { // button press detected
+//    Serial.print(m);
+//    Serial.print(' ');
     m++;
+//    Serial.print(m);
+//    Serial.println(' ');
     if(m>=60) {
       m = 0;
     }
     rtc.Minutes = bin2bcd_l(m);
     rtc.Minutes10 = bin2bcd_h(m);
     
-    Serial.println('x'); // debugging print
-    m_depressed = false;
+    DS1302_clock_burst_write((uint8_t *)&rtc);
+    
     lastPressedTime_m = millis();
   }
   
-  // comments above apply here as well
-  buttonState_h = digitalRead(buttonPin_h);
-  if(buttonState_h == HIGH) {
-    h_depressed = true;
-  }
-  if(h_depressed && buttonState_h==LOW) {
+  if((millis()-lastPressedTime_h > buttonDelay) && (analogRead(buttonPin_h)==0)) { // button press detected
+//    Serial.print(h);
+//    Serial.print(' ');
     h++;
-    rtc.h12.Hour = bin2bcd_l(h);
-    rtc.h12.Hour10 = bin2bcd_h(h);
-    if(h==12) {
+//    Serial.print(h);
+//    Serial.println(' ');
+    if(h>12) {
       h = 1;
     }
+    rtc.h12.Hour = bin2bcd_l(h);
+    rtc.h12.Hour10 = bin2bcd_h(h);
     
-    Serial.println('y');
-    h_depressed = false;
+    DS1302_clock_burst_write((uint8_t *)&rtc);
+    
     lastPressedTime_h = millis();
   }
-  
-  // does not update time unless there's a sufficient buttonDelay between two consecutive button presses
-  if((millis()-lastPressedTime_m > buttonDelay) && (millis()-lastPressedTime_h > buttonDelay)){
-    s = bcd2bin(rtc.Seconds10, rtc.Seconds);
-    rtc.Seconds    = bin2bcd_l(s);
-    rtc.Seconds10  = bin2bcd_h(s);
-    DS1302_clock_burst_write((uint8_t *)&rtc);
-  }
-  
-//  Serial.println(m);
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
