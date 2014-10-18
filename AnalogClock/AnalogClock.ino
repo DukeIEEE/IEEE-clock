@@ -279,14 +279,17 @@ void loop()
 
 ds1302_struct rtc;
 int s, m, h;
-
+unsigned long startCheck, endCheck;
 // myDelay is supposed to find the current time (s for seconds, m for minutes, and h for hours)
 // then updateClock()
 // then check for button-presses most of the time
 // I'm having trouble with buttons, so I commented out the last three lines of code in this function.
 void myDelay(unsigned long duration) {
+  int old_s = s;
   DS1302_clock_burst_read( (uint8_t *) &rtc);
   s = bcd2bin(rtc.Seconds10, rtc.Seconds);
+  if (old_s != s)
+    startCheck = micros();
   m = bcd2bin(rtc.Minutes10, rtc.Minutes);
   h = bcd2bin(rtc.h12.Hour10, rtc.h12.Hour);
   
@@ -311,19 +314,32 @@ void updateClock() {
   for(int i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, 0);
   }
-  strip.show();
+  //strip.show();
   
 //  strip.setPixelColor(0, strip.Color(0,0,0));
 //  strip.setPixelColor(0, strip.Color(1,1,1));
-  strip.setPixelColor(s, sec_c);
+  endCheck = micros();
+  float colorFading = (endCheck-startCheck)/(1000000.0);
+  Serial.println(endCheck-startCheck);
+  //for(int i = 0; i < 10; ++i) {
+  //  strip.setPixelColor(s-i, strip.Color((int)(255*(1-colorFading*i/10)), 0, 0));
+  //}
+  strip.setPixelColor(s-1, strip.Color((int)(255*(1-colorFading)), 0, 0));
+  strip.setPixelColor(s, strip.Color((int)(255*colorFading), 0, 0));
   strip.setPixelColor(m, strip.getPixelColor(m)+min_c);
   int hour_index = 5*h + m/12;
   strip.setPixelColor(hour_index, strip.getPixelColor(hour_index)+hour_c);
   strip.show();
+
+  //strip.setPixelColor(s, sec_c);
+  //strip.setPixelColor(m, strip.getPixelColor(m)+min_c);
+  //int hour_index = 5*h + m/12;
+  //strip.setPixelColor(hour_index, strip.getPixelColor(hour_index)+hour_c);
+  //strip.show();
   
 //  Serial.println(5*h + m/12);
   
-  delay(10);
+  //delay(10);
 }
 
 unsigned long buttonDelay = 300; // Minimum time before button-press can be registered again
@@ -331,15 +347,17 @@ unsigned long buttonDelay = 300; // Minimum time before button-press can be regi
 unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0;
 //boolean m_depressed = false, h_depressed = false; // store button states (1 - depressed, 0 - not depressed)
 
-// This part doesn't work.
-// I think it's incrementing incorrectly somewhere, but not sure where yet...
+// Check to see if H/M 
 void checkButtons() {
   if((millis()-lastPressedTime_m > buttonDelay) && (analogRead(buttonPin_m)==0)) { // button press detected
-//    Serial.print(m);
-//    Serial.print(' ');
+  //  Serial.print(m);
+  //  Serial.print(' ');
     m++;
-//    Serial.print(m);
-//    Serial.println(' ');
+  //  Serial.print("Minute:");
+  //  Serial.print(m);
+  //  Serial.println("Hour: ");
+   // Serial.print(h);
+    
     if(m>=60) {
       m = 0;
     }
@@ -598,4 +616,5 @@ void _DS1302_togglewrite( uint8_t data, uint8_t release)
     }
   }
 }
+
 
