@@ -19,9 +19,9 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
-uint32_t sec_c = strip.Color(128, 0, 0); //second
-uint32_t min_c = strip.Color(0, 128, 0); //minute
-uint32_t hour_c = strip.Color(0, 0, 128); //hour
+uint32_t sec_c = strip.Color(32, 0, 0); //second
+uint32_t min_c = strip.Color(0, 32, 0); //minute
+uint32_t hour_c = strip.Color(0, 0, 32); //hour
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
@@ -184,10 +184,10 @@ void setup()
   // Disable Trickle Charger.
   DS1302_write (DS1302_TRICKLE, 0x00);
 
-// Remove the next define, 
-// after the right date and time are set.
-#define SET_DATE_TIME_JUST_ONCE
-#ifdef SET_DATE_TIME_JUST_ONCE  
+  // Remove the next define, 
+  // after the right date and time are set.
+  #define SET_DATE_TIME_JUST_ONCE
+  #ifdef SET_DATE_TIME_JUST_ONCE  
 
   // Fill these variables with the date and time.
   int seconds, minutes, hours, dayofweek, dayofmonth, month, year;
@@ -290,7 +290,7 @@ void myDelay(unsigned long duration) {
   s = bcd2bin(rtc.Seconds10, rtc.Seconds);
   
   if (s != old_s && s % 5 == 0){
-    startCheck = micros();
+    startCheck = millis();
   }
   
   m = bcd2bin(rtc.Minutes10, rtc.Minutes);
@@ -320,9 +320,6 @@ void updateClock() {
   
 //  strip.setPixelColor(0, strip.Color(0,0,0));
 //  strip.setPixelColor(0, strip.Color(1,1,1));
-  endCheck = micros();
-  float colorFading = (endCheck-startCheck)/(5000000.0);
-  Serial.println(endCheck-startCheck);
   //for(int i = 0; i < 10; ++i) {
   //  strip.setPixelColor(s-i, strip.Color((int)(255*(1-colorFading*i/10)), 0, 0));
   //}
@@ -334,15 +331,36 @@ void updateClock() {
   int s_led = s / 5 + offset;
   int m_led = m / 5 + offset;
   int h_led = h + offset;
+  
   int prev_s_led;
   if (s_led == offset)
-    prev_s_led = 12+offset;
+    prev_s_led == 11 + offset;
   else
-    prev_s_led = s_led - 1;
-  strip.setPixelColor(prev_s_led, strip.Color((int)(255*(1-colorFading)), 0, 0));
-  strip.setPixelColor(s_led, strip.Color((int)(255*colorFading), 0, 0));
-  strip.setPixelColor(m_led, strip.getPixelColor(m_led)+min_c);
-  strip.setPixelColor(h_led, strip.getPixelColor(h_led)+hour_c);
+    prev_s_led = s_led - 1; 
+    
+  int prev_m_led;
+  if (m_led == offset)
+    prev_m_led == 11 + offset;
+  else
+    prev_m_led = m_led - 1;  
+    
+  int prev_h_led;
+  if (h_led == offset)
+    prev_h_led == 11 + offset;
+  else
+    prev_h_led = h_led - 1;  
+    
+  endCheck = millis();
+  float s_colorFading = (endCheck-startCheck)/(5000.0);
+  float m_colorFading = ((float)s / 60.0);
+  float h_colorFading = ((float)m / 60.0);
+  
+  strip.setPixelColor(prev_s_led, strip.Color((int)(32*(1-s_colorFading)), 0, 0));
+  strip.setPixelColor(s_led, strip.Color((int)(32*s_colorFading), 0, 0));
+  strip.setPixelColor(prev_m_led, strip.getPixelColor(m_led)+strip.Color(0, 32*(1-m_colorFading), 0));
+  strip.setPixelColor(m_led, strip.getPixelColor(m_led)+strip.Color(0, 32*m_colorFading, 0));
+  strip.setPixelColor(prev_h_led, strip.getPixelColor(h_led)+strip.Color(0, 0, 32*(1-h_colorFading)));
+  strip.setPixelColor(h_led, strip.getPixelColor(h_led)+strip.Color(0, 0, 32*h_colorFading));
   strip.show();
 
   //strip.setPixelColor(s, sec_c);
