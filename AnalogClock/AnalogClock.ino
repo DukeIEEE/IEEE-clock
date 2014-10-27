@@ -307,11 +307,11 @@ void myDelay(unsigned long duration) {
 // Keep in mind that we'll need to rewrite this code for a 12-LED strip (remove hour_index = h)
 // This function works properly unless checkButtons() is called.
 void updateClock() {
-//  Serial.print(s);
-//  Serial.print(' ');
-//  Serial.print(m);
-//  Serial.print(' ');
-//  Serial.println(h);
+  Serial.print(s);
+  Serial.print(' ');
+  Serial.print(m);
+  Serial.print(' ');
+  Serial.println(h);
   
   for(int i=0; i<strip.numPixels(); i++) {
     strip.setPixelColor(i, 0);
@@ -334,19 +334,19 @@ void updateClock() {
   
   int prev_s_led;
   if (s_led == offset)
-    prev_s_led == 11 + offset;
+    prev_s_led = (11 + offset)%12;
   else
     prev_s_led = s_led - 1; 
     
   int prev_m_led;
   if (m_led == offset)
-    prev_m_led == 11 + offset;
+    prev_m_led = (11 + offset)%12;
   else
     prev_m_led = m_led - 1;  
     
   int prev_h_led;
   if (h_led == offset)
-    prev_h_led == 11 + offset;
+    prev_h_led = (11 + offset)%12;
   else
     prev_h_led = h_led - 1;  
     
@@ -355,12 +355,12 @@ void updateClock() {
   float m_colorFading = ((float)s / 60.0);
   float h_colorFading = ((float)m / 60.0);
   
-  strip.setPixelColor(prev_s_led, strip.Color((int)(32*(1-s_colorFading)), 0, 0));
-  strip.setPixelColor(s_led, strip.Color((int)(32*s_colorFading), 0, 0));
-  strip.setPixelColor(prev_m_led, strip.getPixelColor(m_led)+strip.Color(0, 32*(1-m_colorFading), 0));
-  strip.setPixelColor(m_led, strip.getPixelColor(m_led)+strip.Color(0, 32*m_colorFading, 0));
-  strip.setPixelColor(prev_h_led, strip.getPixelColor(h_led)+strip.Color(0, 0, 32*(1-h_colorFading)));
-  strip.setPixelColor(h_led, strip.getPixelColor(h_led)+strip.Color(0, 0, 32*h_colorFading));
+  strip.setPixelColor(prev_s_led, strip.getPixelColor(prev_s_led) + strip.Color((int)(32*(1-s_colorFading)), 0, 0));
+  strip.setPixelColor(s_led, strip.getPixelColor(s_led) + strip.Color((int)(32*s_colorFading), 0, 0));
+  strip.setPixelColor(prev_m_led, strip.getPixelColor(prev_m_led) + strip.Color(0, 32*(1-m_colorFading), 0));
+  strip.setPixelColor(m_led, strip.getPixelColor(m_led) + strip.Color(0, 32*m_colorFading, 0));
+  strip.setPixelColor(prev_h_led, strip.getPixelColor(prev_h_led) + strip.Color(0, 0, 32*(1-h_colorFading)));
+  strip.setPixelColor(h_led, strip.getPixelColor(h_led) + strip.Color(0, 0, 32*h_colorFading));
   strip.show();
 
   //strip.setPixelColor(s, sec_c);
@@ -381,7 +381,8 @@ unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0;
 
 // Check to see if H/M 
 void checkButtons() {
-  if((millis()-lastPressedTime_m > buttonDelay) && (analogRead(buttonPin_m)==0)) { // button press detected
+  if((millis()-lastPressedTime_m > buttonDelay) && (analogRead(buttonPin_m)>1000)) { // button press detected
+//  Serial.println('m');
   //  Serial.print(m);
   //  Serial.print(' ');
     m++;
@@ -401,7 +402,8 @@ void checkButtons() {
     lastPressedTime_m = millis();
   }
   
-  if((millis()-lastPressedTime_h > buttonDelay) && (analogRead(buttonPin_h)==0)) { // button press detected
+  if((millis()-lastPressedTime_h > buttonDelay) && (analogRead(buttonPin_h)>1000)) { // button press detected
+//  Serial.println('h');
 //    Serial.print(h);
 //    Serial.print(' ');
     h++;
