@@ -26,8 +26,9 @@ uint32_t hour_c = strip.Color(0, 0, 32); //hour
 //--------------------------------------------------------------------------------------------------------------------------------
 
 // Buttons
-const int buttonPin_m = A2;     // the number of the pushbutton pin
-const int buttonPin_h = A3;
+const int buttonPin_m = 2;     // the number of the pushbutton pin
+const int buttonPin_h = 3;
+const int buttonPin_reset = 4;
 
 // variables will change:
 int buttonState_m = 0;         // variable for reading the pushbutton status
@@ -245,8 +246,9 @@ void setup()
   
   
     // initialize the pushbutton pin as an input:
-  pinMode(buttonPin_m, INPUT);
-  pinMode(buttonPin_h, INPUT);
+  pinMode(buttonPin_m, INPUT_PULLUP);
+  pinMode(buttonPin_h, INPUT_PULLUP);
+  pinMode(buttonPin_reset, INPUT_PULLUP);
 }
 
 //-------------------------------------------------------------------------------------------------------------------------------- loop
@@ -376,12 +378,23 @@ void updateClock() {
 
 unsigned long buttonDelay = 300; // Minimum time before button-press can be registered again
 // (not a good button system because it doesn't allow continuous button-holding changes, so someone help us fix this)
-unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0;
+unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0, lastPressedTime_s = 0;
 //boolean m_depressed = false, h_depressed = false; // store button states (1 - depressed, 0 - not depressed)
 
-// Check to see if H/M 
+// Check to see if H/M or S-reset pressed
 void checkButtons() {
-  if((millis()-lastPressedTime_m > buttonDelay) && (analogRead(buttonPin_m)>1000)) { // button press detected
+  // reset seconds to 0
+  if((millis()-lastPressedTime_s > buttonDelay) && (digitalRead(buttonPin_reset)==0)) { // reset button (for seconds) press detected
+    s = 0;
+    rtc.Seconds = bin2bcd_l(s);
+    rtc.Seconds10 = bin2bcd_h(s);
+    
+    DS1302_clock_burst_write((uint8_t *)&rtc);
+    
+    lastPressedTime_s = millis();
+  }
+  
+  if((millis()-lastPressedTime_m > buttonDelay) && (digitalRead(buttonPin_m)==0)) { // button press detected
 //  Serial.println('m');
   //  Serial.print(m);
   //  Serial.print(' ');
@@ -402,7 +415,7 @@ void checkButtons() {
     lastPressedTime_m = millis();
   }
   
-  if((millis()-lastPressedTime_h > buttonDelay) && (analogRead(buttonPin_h)>1000)) { // button press detected
+  if((millis()-lastPressedTime_h > buttonDelay) && (digitalRead(buttonPin_h)==0)) { // button press detected
 //  Serial.println('h');
 //    Serial.print(h);
 //    Serial.print(' ');
