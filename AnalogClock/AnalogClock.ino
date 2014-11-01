@@ -336,19 +336,19 @@ void updateClock() {
   
   int prev_s_led;
   if (s_led == offset)
-    prev_s_led = (11 + offset)%12;
+    prev_s_led = (11 + offset);
   else
     prev_s_led = s_led - 1; 
     
   int prev_m_led;
   if (m_led == offset)
-    prev_m_led = (11 + offset)%12;
+    prev_m_led = (11 + offset);
   else
     prev_m_led = m_led - 1;  
     
   int prev_h_led;
   if (h_led == offset)
-    prev_h_led = (11 + offset)%12;
+    prev_h_led = (11 + offset);
   else
     prev_h_led = h_led - 1;  
     
