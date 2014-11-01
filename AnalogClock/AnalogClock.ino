@@ -22,7 +22,7 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(60, PIN, NEO_GRB + NEO_KHZ800);
 uint32_t sec_c = strip.Color(32, 0, 0); //second
 uint32_t min_c = strip.Color(0, 32, 0); //minute
 uint32_t hour_c = strip.Color(0, 0, 32); //hour
-
+boolean hourAnimationPlayed = false;
 //--------------------------------------------------------------------------------------------------------------------------------
 
 // Buttons
@@ -299,8 +299,17 @@ void myDelay(unsigned long duration) {
   
   m = bcd2bin(rtc.Minutes10, rtc.Minutes);
   h = bcd2bin(rtc.h12.Hour10, rtc.h12.Hour);  
-  updateClock();
   
+  if (m == 0 && hourAnimationPlayed == false) {
+    rainbowWipe(100);
+    hourAnimationPlayed = true;
+  }
+  
+  if (m != 0 && hourAnimationPlayed == true) {
+    hourAnimationPlayed = false;
+  }
+
+  updateClock();
 //  unsigned long start = millis();
 //  while (millis() - start <= duration) {
 //  }
@@ -667,4 +676,31 @@ void _DS1302_togglewrite( uint8_t data, uint8_t release)
   }
 }
 
+// pretty color methods
+void rainbowWipe(uint8_t wait) {
+  uint16_t count = 0;
+  for (uint16_t i=1; i < 6; i++) {
+    for(uint16_t j=5; j<17; j++) {
+        count += 15;
+        strip.setPixelColor(j, Wheel(count % 256));
+        strip.show();
+        delay(wait);
+    }
+  }    
+}
 
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  float colorScale = .2;
+  if(WheelPos < 85) {
+   return strip.Color(colorScale*(255 - WheelPos * 3), 0, colorScale*(WheelPos * 3));
+  } else if(WheelPos < 170) {
+    WheelPos -= 85;
+   return strip.Color(0, colorScale*(WheelPos * 3), colorScale*(255 - WheelPos * 3));
+  } else {
+   WheelPos -= 170;
+   return strip.Color(colorScale*(WheelPos * 3), colorScale*(255 - WheelPos * 3), 0);
+  }
+}
