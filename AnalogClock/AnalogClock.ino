@@ -385,6 +385,8 @@ unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0, lastPressedTime_s = 
 void checkButtons() {
   // reset seconds to 0
   if((millis()-lastPressedTime_s > buttonDelay) && (digitalRead(buttonPin_reset)==0)) { // reset button (for seconds) press detected
+
+
     s = 0;
     rtc.Seconds = bin2bcd_l(s);
     rtc.Seconds10 = bin2bcd_h(s);
@@ -421,6 +423,7 @@ void checkButtons() {
 //    Serial.print(' ');
     h++;
 //    Serial.print(h);
+
 //    Serial.println(' ');
     if(h>12) {
       h = 1;

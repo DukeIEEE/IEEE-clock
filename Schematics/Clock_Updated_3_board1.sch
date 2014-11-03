@@ -1766,6 +1766,8 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <part name="C15" library="SparkFun-Capacitors" deviceset="10UF-6.3V-20%(1206)" device="" value="10uF"/>
 <part name="C16" library="SparkFun-Capacitors" deviceset="10UF-6.3V-20%(1206)" device="" value="10uF"/>
 <part name="GND31" library="supply1" deviceset="GND" device=""/>
+<part name="S3" library="SparkFun-Electromechanical" deviceset="TAC_SWITCH" device="PTH"/>
+<part name="GND32" library="supply1" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -1807,8 +1809,8 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <instance part="LED12" gate="G$1" x="-33.02" y="73.66" rot="R90"/>
 <instance part="GND14" gate="1" x="-20.32" y="73.66" rot="R90"/>
 <instance part="ISP1" gate="G$1" x="127" y="0"/>
-<instance part="GND15" gate="1" x="45.72" y="106.68"/>
-<instance part="GND16" gate="1" x="30.48" y="106.68"/>
+<instance part="GND15" gate="1" x="40.64" y="106.68" rot="R180"/>
+<instance part="GND16" gate="1" x="25.4" y="106.68" rot="R180"/>
 <instance part="C1" gate="G$1" x="30.48" y="149.86"/>
 <instance part="C2" gate="G$1" x="63.5" y="149.86"/>
 <instance part="C3" gate="G$1" x="96.52" y="149.86"/>
@@ -1851,11 +1853,13 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <instance part="GND28" gate="1" x="48.26" y="43.18"/>
 <instance part="GND29" gate="1" x="40.64" y="43.18"/>
 <instance part="Y3" gate="G$1" x="30.48" y="53.34"/>
-<instance part="Y1" gate="G$1" x="58.42" y="50.8"/>
+<instance part="Y1" gate="G$1" x="55.88" y="48.26"/>
 <instance part="GND30" gate="1" x="-20.32" y="96.52"/>
 <instance part="C15" gate="G$1" x="-38.1" y="119.38"/>
 <instance part="C16" gate="G$1" x="-5.08" y="116.84"/>
 <instance part="GND31" gate="1" x="-48.26" y="121.92"/>
+<instance part="S3" gate="S" x="55.88" y="93.98" rot="R270"/>
+<instance part="GND32" gate="1" x="55.88" y="106.68" rot="R180"/>
 </instances>
 <busses>
 </busses>
@@ -1904,10 +1908,10 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <label x="0" y="35.56" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="PB0(ICP)"/>
-<wire x1="111.76" y1="22.86" x2="116.84" y2="22.86" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="22.86" x2="116.84" y2="25.4" width="0.1524" layer="91"/>
-<label x="116.84" y="25.4" size="1.778" layer="95" xref="yes"/>
+<label x="121.92" y="25.4" size="1.778" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="PD6(AIN0)"/>
+<wire x1="121.92" y1="30.48" x2="111.76" y2="30.48" width="0.1524" layer="91"/>
+<wire x1="121.92" y1="30.48" x2="121.92" y2="25.4" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIN15" class="0">
@@ -1917,9 +1921,11 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <label x="0" y="30.48" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="PB1(OC1A)"/>
-<wire x1="111.76" y1="20.32" x2="116.84" y2="20.32" width="0.1524" layer="91"/>
-<label x="116.84" y="20.32" size="1.778" layer="95" xref="yes"/>
+<label x="121.92" y="20.32" size="1.778" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="PD7(AIN1)"/>
+<wire x1="116.84" y1="20.32" x2="121.92" y2="20.32" width="0.1524" layer="91"/>
+<wire x1="111.76" y1="27.94" x2="116.84" y2="27.94" width="0.1524" layer="91"/>
+<wire x1="116.84" y1="27.94" x2="116.84" y2="20.32" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="PIN16" class="0">
@@ -1929,9 +1935,11 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <label x="0" y="25.4" size="1.778" layer="95" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="U1" gate="G$1" pin="PB2(SS/OC1B)"/>
-<wire x1="111.76" y1="17.78" x2="127" y2="17.78" width="0.1524" layer="91"/>
-<label x="127" y="17.78" size="1.778" layer="95" xref="yes"/>
+<label x="124.46" y="17.78" size="1.778" layer="95" xref="yes"/>
+<pinref part="U1" gate="G$1" pin="PB0(ICP)"/>
+<wire x1="114.3" y1="17.78" x2="124.46" y2="17.78" width="0.1524" layer="91"/>
+<wire x1="111.76" y1="22.86" x2="114.3" y2="22.86" width="0.1524" layer="91"/>
+<wire x1="114.3" y1="22.86" x2="114.3" y2="17.78" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="GND" class="0">
@@ -1995,19 +2003,6 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <segment>
 <pinref part="LED12" gate="G$1" pin="GND"/>
 <pinref part="GND14" gate="1" pin="GND"/>
-</segment>
-<segment>
-<pinref part="S1" gate="S" pin="1"/>
-<wire x1="25.4" y1="99.06" x2="25.4" y2="101.6" width="0.1524" layer="91"/>
-<pinref part="GND16" gate="1" pin="GND"/>
-<wire x1="30.48" y1="109.22" x2="25.4" y2="109.22" width="0.1524" layer="91"/>
-<wire x1="25.4" y1="109.22" x2="25.4" y2="99.06" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="S2" gate="S" pin="1"/>
-<wire x1="40.64" y1="99.06" x2="40.64" y2="109.22" width="0.1524" layer="91"/>
-<pinref part="GND15" gate="1" pin="GND"/>
-<wire x1="40.64" y1="109.22" x2="45.72" y2="109.22" width="0.1524" layer="91"/>
 </segment>
 <segment>
 <pinref part="GND17" gate="1" pin="GND"/>
@@ -2089,13 +2084,27 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <pinref part="C15" gate="G$1" pin="1"/>
 <wire x1="-48.26" y1="124.46" x2="-38.1" y2="124.46" width="0.1524" layer="91"/>
 </segment>
+<segment>
+<pinref part="S1" gate="S" pin="1"/>
+<pinref part="GND16" gate="1" pin="GND"/>
+<wire x1="25.4" y1="104.14" x2="25.4" y2="99.06" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND15" gate="1" pin="GND"/>
+<pinref part="S2" gate="S" pin="1"/>
+<wire x1="40.64" y1="104.14" x2="40.64" y2="99.06" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="GND32" gate="1" pin="GND"/>
+<pinref part="S3" gate="S" pin="1"/>
+<wire x1="55.88" y1="104.14" x2="55.88" y2="99.06" width="0.1524" layer="91"/>
+</segment>
 </net>
 <net name="SWITCH2" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="PD3(INT1)"/>
-<wire x1="116.84" y1="38.1" x2="111.76" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="116.84" y1="38.1" x2="116.84" y2="35.56" width="0.1524" layer="91"/>
-<label x="116.84" y="35.56" size="1.778" layer="95" xref="yes"/>
+<wire x1="111.76" y1="38.1" x2="139.7" y2="38.1" width="0.1524" layer="91"/>
+<label x="139.7" y="38.1" size="1.778" layer="95" xref="yes"/>
 </segment>
 <segment>
 <wire x1="33.02" y1="68.58" x2="40.64" y2="68.58" width="0.1524" layer="91"/>
@@ -2118,6 +2127,7 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 <pinref part="S1" gate="S" pin="3"/>
 <wire x1="25.4" y1="88.9" x2="25.4" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="25.4" y1="73.66" x2="17.78" y2="73.66" width="0.1524" layer="91"/>
+<wire x1="17.78" y1="73.66" x2="17.78" y2="63.5" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -2504,33 +2514,60 @@ Standard 7805 5V regulator. IGO (Input Ground Output). Spark Fun Electronics SKU
 </net>
 <net name="N$38" class="0">
 <segment>
-<wire x1="55.88" y1="53.34" x2="55.88" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="53.34" x2="53.34" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="U1" gate="G$1" pin="PB7(XTAL2/TOSC2)"/>
-<wire x1="55.88" y1="50.8" x2="55.88" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="55.88" y1="38.1" x2="63.5" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="48.26" x2="53.34" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="38.1" x2="63.5" y2="38.1" width="0.1524" layer="91"/>
 <pinref part="C13" gate="G$1" pin="1"/>
-<wire x1="55.88" y1="53.34" x2="48.26" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="53.34" y1="53.34" x2="48.26" y2="53.34" width="0.1524" layer="91"/>
 <pinref part="Y1" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="N$39" class="0">
 <segment>
 <pinref part="U1" gate="G$1" pin="PB6(XTAL1/TOSC1)"/>
-<wire x1="63.5" y1="43.18" x2="60.96" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="63.5" y1="43.18" x2="58.42" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="C14" gate="G$1" pin="1"/>
 <wire x1="40.64" y1="53.34" x2="40.64" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="40.64" y1="55.88" x2="60.96" y2="55.88" width="0.1524" layer="91"/>
-<wire x1="60.96" y1="55.88" x2="60.96" y2="50.8" width="0.1524" layer="91"/>
+<wire x1="40.64" y1="55.88" x2="58.42" y2="55.88" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="55.88" x2="58.42" y2="48.26" width="0.1524" layer="91"/>
 <pinref part="Y1" gate="G$1" pin="2"/>
-<wire x1="60.96" y1="50.8" x2="60.96" y2="43.18" width="0.1524" layer="91"/>
+<wire x1="58.42" y1="48.26" x2="58.42" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 </net>
-<net name="N$37" class="0">
+<net name="RESET_S" class="0">
+<segment>
+<pinref part="U1" gate="G$1" pin="PD4(XCK/T0)"/>
+<wire x1="111.76" y1="35.56" x2="116.84" y2="35.56" width="0.1524" layer="91"/>
+<label x="116.84" y="35.56" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="S3" gate="S" pin="3"/>
+<label x="55.88" y="81.28" size="1.778" layer="95"/>
+<wire x1="55.88" y1="88.9" x2="55.88" y2="81.28" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="POWER" class="0">
+<segment>
+<pinref part="U1" gate="G$1" pin="AREF"/>
+<wire x1="63.5" y1="53.34" x2="60.96" y2="53.34" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="53.34" x2="60.96" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="60.96" y1="58.42" x2="48.26" y2="58.42" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="58.42" x2="48.26" y2="60.96" width="0.1524" layer="91"/>
+<pinref part="U1" gate="G$1" pin="AVCC"/>
+<wire x1="48.26" y1="60.96" x2="48.26" y2="63.5" width="0.1524" layer="91"/>
+<wire x1="48.26" y1="63.5" x2="63.5" y2="63.5" width="0.1524" layer="91"/>
+<label x="48.26" y="66.04" size="1.778" layer="95"/>
+<wire x1="48.26" y1="66.04" x2="48.26" y2="63.5" width="0.1524" layer="91"/>
+</segment>
 <segment>
 <pinref part="IC1" gate="G$1" pin="OUT"/>
-<wire x1="-12.7" y1="116.84" x2="-12.7" y2="121.92" width="0.1524" layer="91"/>
+<wire x1="-12.7" y1="116.84" x2="-12.7" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="C16" gate="G$1" pin="1"/>
+<wire x1="-12.7" y1="119.38" x2="-12.7" y2="121.92" width="0.1524" layer="91"/>
 <wire x1="-5.08" y1="121.92" x2="-12.7" y2="121.92" width="0.1524" layer="91"/>
+<label x="-12.7" y="124.46" size="1.778" layer="95"/>
+<wire x1="-12.7" y1="124.46" x2="-12.7" y2="121.92" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
