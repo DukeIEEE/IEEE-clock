@@ -327,30 +327,34 @@ void updateClock() {
   //}
   
   // offset is because first LED on strip is broken.
-  int offset = 5;
+  int offset = 0;
   // divide by 5 and add offset to use only 12 LEDs on strip.
   // also done for minutes.
   int s_led = s / 5 + offset;
   int m_led = m / 5 + offset;
   int h_led = h + offset;
   
+  s_led = (12 - s_led) % 12;
+  m_led = (12 - m_led) % 12;
+  h_led = (12 - h_led) % 12;
+  
   int prev_s_led;
   if (s_led == offset)
-    prev_s_led = (11 + offset)%12;
+    prev_s_led = (1 + offset)%12;
   else
-    prev_s_led = s_led - 1; 
+    prev_s_led = s_led + 1; 
     
   int prev_m_led;
   if (m_led == offset)
-    prev_m_led = (11 + offset)%12;
+    prev_m_led = (1 + offset)%12;
   else
-    prev_m_led = m_led - 1;  
+    prev_m_led = m_led + 1;  
     
   int prev_h_led;
   if (h_led == offset)
-    prev_h_led = (11 + offset)%12;
+    prev_h_led = (1 + offset)%12;
   else
-    prev_h_led = h_led - 1;  
+    prev_h_led = h_led + 1;  
     
   endCheck = millis();
   float s_colorFading = (endCheck-startCheck)/(5000.0);
