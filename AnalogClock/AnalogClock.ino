@@ -281,16 +281,16 @@ void loop()
 
 ds1302_struct rtc;
 int s, old_s, m, h;
+
 unsigned long startCheck, endCheck;
 // myDelay is supposed to find the current time (s for seconds, m for minutes, and h for hours)
 // then updateClock()
 // then check for button-presses most of the time
 // I'm having trouble with buttons, so I commented out the last three lines of code in this function.
 void myDelay(unsigned long duration) {
-  int old_s = s;
+  old_s = s;
   DS1302_clock_burst_read( (uint8_t *) &rtc);
   s = bcd2bin(rtc.Seconds10, rtc.Seconds);
-  
   if (s != old_s && s % 5 == 0){
     startCheck = millis();
   }
@@ -309,13 +309,14 @@ void myDelay(unsigned long duration) {
 // Keep in mind that we'll need to rewrite this code for a 12-LED strip (remove hour_index = h)
 // This function works properly unless checkButtons() is called.
 void updateClock() {
+  // LED 12 is index 0. LED 11 is index 1.
   Serial.print(s);
   Serial.print(' ');
   Serial.print(m);
   Serial.print(' ');
   Serial.println(h);
   
-  for(int i=0; i<strip.numPixels(); i++) {
+  for(int i=0; i < strip.numPixels(); i++) {
     strip.setPixelColor(i, 0);
   }
   //strip.show();
@@ -358,11 +359,14 @@ void updateClock() {
     
   endCheck = millis();
   float s_colorFading = (endCheck-startCheck)/(5000.0);
+  s_colorFading = constrain(s_colorFading, 0.0, 1.0);
   float m_colorFading = ((float)s / 60.0);
   float h_colorFading = ((float)m / 60.0);
   
-  strip.setPixelColor(prev_s_led, strip.getPixelColor(prev_s_led) + strip.Color((int)(32*(1-s_colorFading)), 0, 0));
-  strip.setPixelColor(s_led, strip.getPixelColor(s_led) + strip.Color((int)(32*s_colorFading), 0, 0));
+  //strip.setPixelColor(prev_s_led, strip.getPixelColor(prev_s_led) + strip.Color((int)(32*(1-s_colorFading)), 0, 0));
+  //strip.setPixelColor(s_led, strip.getPixelColor(s_led) + strip.Color((int)(32*s_colorFading), 0, 0));
+  strip.setPixelColor(prev_s_led, strip.Color((int)(32*(1-s_colorFading)), 0, 0));
+  strip.setPixelColor(s_led, strip.Color((int)(32*s_colorFading), 0, 0));
   strip.setPixelColor(prev_m_led, strip.getPixelColor(prev_m_led) + strip.Color(0, 32*(1-m_colorFading), 0));
   strip.setPixelColor(m_led, strip.getPixelColor(m_led) + strip.Color(0, 32*m_colorFading, 0));
   strip.setPixelColor(prev_h_led, strip.getPixelColor(prev_h_led) + strip.Color(0, 0, 32*(1-h_colorFading)));
@@ -389,28 +393,27 @@ unsigned long lastPressedTime_m = 0, lastPressedTime_h = 0, lastPressedTime_s = 
 void checkButtons() {
   // reset seconds to 0
   if((millis()-lastPressedTime_s > buttonDelay) && (digitalRead(buttonPin_reset)==0)) { // reset button (for seconds) press detected
-
-
     s = 0;
+    old_s = 59;
+    
     rtc.Seconds = bin2bcd_l(s);
     rtc.Seconds10 = bin2bcd_h(s);
-    
     DS1302_clock_burst_write((uint8_t *)&rtc);
-    
     lastPressedTime_s = millis();
+    startCheck = lastPressedTime_s;
   }
   
   if((millis()-lastPressedTime_m > buttonDelay) && (digitalRead(buttonPin_m)==0)) { // button press detected
-//  Serial.println('m');
+  //  Serial.println('m');
   //  Serial.print(m);
   //  Serial.print(' ');
     m++;
   //  Serial.print("Minute:");
   //  Serial.print(m);
   //  Serial.println("Hour: ");
-   // Serial.print(h);
+  // Serial.print(h);
     
-    if(m>=60) {
+    if (m >= 60) {
       m = 0;
     }
     rtc.Minutes = bin2bcd_l(m);
@@ -422,15 +425,15 @@ void checkButtons() {
   }
   
   if((millis()-lastPressedTime_h > buttonDelay) && (digitalRead(buttonPin_h)==0)) { // button press detected
-//  Serial.println('h');
+//    Serial.println('h');
 //    Serial.print(h);
 //    Serial.print(' ');
     h++;
 //    Serial.print(h);
 
 //    Serial.println(' ');
-    if(h>12) {
-      h = 1;
+    if (h >= 12) {
+      h = 0;
     }
     rtc.h12.Hour = bin2bcd_l(h);
     rtc.h12.Hour10 = bin2bcd_h(h);
@@ -439,6 +442,7 @@ void checkButtons() {
     
     lastPressedTime_h = millis();
   }
+  updateClock();
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------
