@@ -297,11 +297,12 @@ void myDelay(unsigned long duration) {
   
   m = bcd2bin(rtc.Minutes10, rtc.Minutes);
   h = bcd2bin(rtc.h12.Hour10, rtc.h12.Hour);  
-  updateClock();
   
 //  unsigned long start = millis();
 //  while (millis() - start <= duration) {
   checkButtons();
+  updateClock();
+
 //  }
 }
 
@@ -316,8 +317,8 @@ void updateClock() {
   Serial.print(' ');
   Serial.println(h);
   
-  for(int i=0; i < strip.numPixels(); i++) {
-    strip.setPixelColor(i, 0);
+  for(int i = 0; i < 12; i++) {
+    strip.setPixelColor(i, strip.Color(0, 0, 0));
   }
   //strip.show();
   
@@ -360,17 +361,22 @@ void updateClock() {
   endCheck = millis();
   float s_colorFading = (endCheck-startCheck)/(5000.0);
   s_colorFading = constrain(s_colorFading, 0.0, 1.0);
-  float m_colorFading = ((float)s / 60.0);
-  float h_colorFading = ((float)m / 60.0);
-  
+  float m_colorFading = ((float)(m-5*(m_led)) / 5.0);
+  m_colorFading = constrain(m_colorFading, 0.0, 1.0);
+  Serial.println("M debugging:");
+  Serial.print(m);
+  Serial.print(" ");
+  Serial.println(5*(m_led));
+  float h_colorFading = (float)(m / 60.0);
+ 
   //strip.setPixelColor(prev_s_led, strip.getPixelColor(prev_s_led) + strip.Color((int)(32*(1-s_colorFading)), 0, 0));
   //strip.setPixelColor(s_led, strip.getPixelColor(s_led) + strip.Color((int)(32*s_colorFading), 0, 0));
-  strip.setPixelColor(prev_s_led, strip.Color((int)(32*(1-s_colorFading)), 0, 0));
-  strip.setPixelColor(s_led, strip.Color((int)(32*s_colorFading), 0, 0));
-  strip.setPixelColor(prev_m_led, strip.getPixelColor(prev_m_led) + strip.Color(0, 32*(1-m_colorFading), 0));
-  strip.setPixelColor(m_led, strip.getPixelColor(m_led) + strip.Color(0, 32*m_colorFading, 0));
-  strip.setPixelColor(prev_h_led, strip.getPixelColor(prev_h_led) + strip.Color(0, 0, 32*(1-h_colorFading)));
-  strip.setPixelColor(h_led, strip.getPixelColor(h_led) + strip.Color(0, 0, 32*h_colorFading));
+  strip.setPixelColor(prev_s_led, strip.Color((int)(32.0*(1.0-s_colorFading)), 0, 0));
+  strip.setPixelColor(s_led, strip.Color((int)(32.0*s_colorFading), 0, 0));
+  strip.setPixelColor(prev_m_led, strip.getPixelColor(prev_m_led) + strip.Color(0, (int)(32.0*(1.0-m_colorFading)), 0));
+  strip.setPixelColor(m_led, strip.getPixelColor(m_led) + strip.Color(0, (int)(32.0*m_colorFading), 0));
+  strip.setPixelColor(prev_h_led, strip.getPixelColor(prev_h_led) + strip.Color(0, 0, (int)(32.0*(1.0-h_colorFading))));
+  strip.setPixelColor(h_led, strip.getPixelColor(h_led) + strip.Color(0, 0, (int)(32.0*h_colorFading)));
   strip.show();
 
   //strip.setPixelColor(s, sec_c);
